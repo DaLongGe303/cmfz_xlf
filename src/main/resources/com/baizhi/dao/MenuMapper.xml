@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.baizhi.dao.MenuDao">
+    <resultMap id="empMenu" type="com.baizhi.entity.Menu">
+        <result column="b_menuId" property="menuId"/>
+        <result column="b_menuTitle" property="menuTitle"/>
+        <result column="b_menuconCls" property="menuconCls"/>
+        <result column="b_menuParentId" property="menuParentId"/>
+        <result column="b_menuJspUrl" property="menuJspUrl"/>
+        <collection property="childmenu" ofType="com.baizhi.entity.Childmenu">
+            <result column="childId" property="menuId"/>
+            <result column="childTitle" property="menuTitle"/>
+            <result column="b_menuconCls1" property="menuconCls"/>
+            <result column="b_menuParentId1" property="menuParentId"/>
+            <result column="childJspUrl" property="menuJspUrl"/>
+        </collection>
+    </resultMap>
+
+    <!--查所有菜单-->
+    <select id="selectMenu" resultMap="empMenu">
+
+        SELECT
+            t1.*,
+            t2.b_menuId     childId,
+            t2.b_menuTitle  childTitle,
+            t2.b_menuJspUrl childJspUrl,
+            t2.b_menuconCls b_menuconCls1
+        FROM
+            menu t1
+                left JOIN menu t2
+                          ON t1.b_menuId = t2.b_menuParentId
+        where t1.b_menuParentId is null
+    </select>
+
+</mapper>
